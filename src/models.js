@@ -6,7 +6,9 @@ const usersSchema = new Schema({
   mssv: Number,
   role: Boolean,
   age: Number,
-  tel: Number
+  tel: Number,
+  fingerPrint: String,
+  appearance:Number
 });
 
 const Users = mongoose.model("users", usersSchema);

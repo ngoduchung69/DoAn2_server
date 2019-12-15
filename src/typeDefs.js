@@ -1,6 +1,11 @@
 const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
+
+type Subscription {
+  postAdded: String
+}
+
   type User {
     _id: ID!
     name: String
@@ -8,6 +13,14 @@ const typeDefs = gql`
     role: Boolean
     age: Int
     tel: Int
+    fingerPrint:String
+    appearance:Int
+  }
+
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
   }
 
   type CheckIn {
@@ -20,6 +33,12 @@ const typeDefs = gql`
     students: [User]
     user(mssv: Int!): User
     checkInTimes(_id: ID!): [CheckIn]
+    posts: [Post]
+  }
+
+  type Post {
+    author: String
+    comment: String
   }
 
   type Mutation {
@@ -29,6 +48,8 @@ const typeDefs = gql`
       role: Boolean!
       age: Int!
       tel: Int!
+      fingerPrint:String
+      appearance:Int
     ): User
     updateUser(
       name: String!
@@ -40,6 +61,9 @@ const typeDefs = gql`
     ): User
     deleteUser(_id: ID!): User
     addCheckInTime(userId: ID!, checkInTime: String!): CheckIn
+    uploadFile(file: Upload!): File!
+    convertToExel: [User]
+    addPost(message:String!): Boolean
   }
 `;
 
