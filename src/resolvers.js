@@ -1,101 +1,115 @@
-const { Users, Presences } = require("./models");
+const { LightOn, OpenFridge } = require("./models");
+const mongoose = require("mongoose");
 const XLSX = require("xlsx");
-const excelToJson = require("convert-excel-to-json");
 var json2xls = require("json2xls");
-const fs = require('fs');
-const { connect } = require("mqtt");
-const { MQTTPubSub } = require('graphql-mqtt-subscriptions');
-const client = connect('mqtt://tailor.cloudmqtt.com', {
-	reconnectPeriod: 1000,
-	username: "zuqtckzj",
-	password: "KvEwQIQrMSLp",
-	port: "16132"
+const fs = require("fs");
+const { MQTTPubSub } = require("graphql-mqtt-subscriptions");
+const moment = require("moment");
+const mqtt = require("mqtt");
+var client = mqtt.connect("mqtt://192.168.43.176", { clientId: "hung1" });
+
+let createLightOn = async (data) => {
+  try {
+    var d = new Date();
+    var n = d.toISOString();
+    let response = await LightOn.create({ ...data, time: n });
+    console.log(response);
+    return response;
+  } catch (error) {
+    return error.message;
+  }
+}; 
+ 
+var topic_s = "event";
+client.subscribe(topic_s, { qos: 1 });
+client.on("message", function (topic, message, packet) {
+  console.log("" + message);
+  let contentString = "" + message;
+  let contentJson = contentString.replace(/'/g, '"');
+  let contentObject = JSON.parse(contentJson);
+  if (contentObject.type !== 0) {
+    createLightOn({ ...contentObject });
+  }
+  console.log({ ...contentObject });
 });
 
 const pubsub = new MQTTPubSub({
-	client
+  client,
 });
 
-const POST_ADDED = 'demo';
+const POST_ADDED = "event";
 
-const resolvers = { 
+const resolvers = {
   Subscription: {
     postAdded: {
-      resolve:(payload) => {
-        return payload
+      resolve: (payload) => {
+        return payload;
       },
-      subscribe:() => pubsub.asyncIterator([POST_ADDED])
-    }
+      subscribe: () => pubsub.asyncIterator([POST_ADDED]),
+    },
   },
   Query: {
-    users: async () => await Users.find(),
-    students: async () => await Users.find({ role: false }),
-    user: async (_, mssv) => await Users.findOne(mssv),
-    checkInTimes: async (_, _id) => await Presences.find({ userId: _id }),
-    posts(root, args, context) {
-      return postController.posts();
-    },
+    lightOnQuery: async () => await LightOn.find(),
   },
   Mutation: {
-    addPost(root, args, context) {
-      // pubsub.publish(POST_ADDED, { postAdded: args });
-      pubsub.publish(POST_ADDED,  args.message );
-      // return postController.addPost(args);
-      return true;
-    },
-    addUser: async (parent, args) => {
+    addLightOn: async (parent, args) => {
       try {
-        let response = await Users.create(args);
+        var d = new Date();
+        var n = d.toISOString();
+        let response = await LightOn.create({ ...args, time: n });
         return response;
       } catch (error) {
         return error.message;
       }
     },
-    updateUser: async (parent, args) =>
-      await Users.findByIdAndUpdate(args._id, {
-        name: args.name,
-        mssv: args.mssv,
-        role: args.role,
-        age: args.age,
-        tel: args.tel
-      }),
-    deleteUser: async (parent, args) => await Users.deleteOne(args),
-    addCheckInTime: async (parent, args) => {
-      return await Presences.create(args);
+    addOpenFridge: async (parent, args) => {
+      try {
+        let response = await OpenFridge.create(args);
+        return response;
+      } catch (error) {
+        return error.message;
+      }
     },
-    convertToExel: () => {
-      Users.find({}).then(a => {
-        var data = a.map(p => p.toJSON());
-        console.log(data);
-        var xls = json2xls(data);
-        fs.writeFileSync("src/data.xlsx", xls, "binary");
+    addPost(root, args, context) {
+      // pubsub.publish(POST_ADDED, { postAdded: args });
+      pubsub.publish(POST_ADDED, args.message);
+      // return postController.addPost(args);
+      return true;
+    },
+   
+    convertToExel: (parent, args) => {
+      let timeNow = moment().format("YYYY-MM-DD");
+      LightOn.find({}).then((a) => {
+        var data_v = a.map((p) => p.toJSON());
+        var data = [];
+        for (var x of data_v) {
+          delete x.__v;
+          data.push(x);
+        }
+        var fileData = [];
+        var fileLabel = [];
+        for (var x of data) {
+          fileData.push({
+            micro: x.micro, 
+            red: x.color.red,
+            blue: x.color.blue,
+            green: x.color.green,
+            x: x.accel.x,
+            y: x.accel.y,
+            z: x.accel.z,
+          });
+          fileLabel.push({
+            type: x.type, 
+          }); 
+        }
+        var xls = json2xls(fileData);
+        var xlsLabel = json2xls(fileLabel);
+        fs.writeFileSync(`src/data.${timeNow}.xlsx`, xls, "binary");
+        fs.writeFileSync(`src/label.${timeNow}.xlsx`, xlsLabel, "binary");
       });
-      return Users.find({ role: false });
+      return LightOn.find({});
     },
-    uploadFile: async (parent, { file }) => {
-      const { createReadStream, filename, mimetype, encoding } = await file;
-      // const stream = createReadStream();
-      // var stringFile = XLSX.stream.to_json(stream, {raw:true});
-      // console.log(stream);
-
-      // var workbook = XLSX.readFile(file);
-      // var first_sheet_name = workbook.SheetNames[0];
-      // var address_of_cell = "A1";
-      // /* Get worksheet */
-      // var worksheet = workbook.Sheets[first_sheet_name];
-      // var stringFile = XLSX.utils.sheet_to_json(worksheet);
-      // console.log(stringFile);
-
-      // var workbook = XLSX.readFile('Book1.xlsx');
-      // var first_sheet_name = workbook.SheetNames[0];
-      // var worksheet = workbook.Sheets[first_sheet_name];
-      // var stream = XLSX.stream.to_json(worksheet, {raw:true});
-      //   console.log(stream);
-      
-
-      return { filename, mimetype, encoding };
-    }
-  }
+  },
 };
 
 module.exports = { resolvers };

@@ -1,69 +1,73 @@
 const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
+  type Subscription {
+    postAdded: String
+  }
 
-type Subscription {
-  postAdded: String
-}
+  type Accel {
+    x: String
+    y: String
+    z: String
+  }
 
-  type User {
+  type Color {
+    red: String
+    green: String
+    Blue: String
+  }
+
+  input AccelInput {
+    x: String
+    y: String
+    z: String
+  }
+
+  input ColorInput {
+    red: String
+    green: String
+    Blue: String
+  }
+
+  type LightOn {
     _id: ID!
-    name: String
-    mssv: Int
-    role: Boolean
-    age: Int
-    tel: Int
-    fingerPrint:String
-    appearance:Int
+    micro: String
+    accel: Accel
+    type: Int
+    color: Color
+    time: String
   }
 
-  type File {
-    filename: String!
-    mimetype: String!
-    encoding: String!
-  }
-
-  type CheckIn {
-    userId: String
-    checkInTime: String
+  type OpenFridge {
+    _id: ID!
+    micro: String
+    accel: Accel
+    magne: String
+    type: Int
+    color: String
+    time: String
   }
 
   type Query {
-    users: [User]
-    students: [User]
-    user(mssv: Int!): User
-    checkInTimes(_id: ID!): [CheckIn]
-    posts: [Post]
-  }
-
-  type Post {
-    author: String
-    comment: String
+    lightOnQuery: [LightOn]
   }
 
   type Mutation {
-    addUser(
-      name: String!
-      mssv: Int!
-      role: Boolean!
-      age: Int!
-      tel: Int!
-      fingerPrint:String
-      appearance:Int
-    ): User
-    updateUser(
-      name: String!
-      mssv: Int!
-      role: Boolean!
-      _id: ID!
-      age: Int!
-      tel: Int!
-    ): User
-    deleteUser(_id: ID!): User
-    addCheckInTime(userId: ID!, checkInTime: String!): CheckIn
-    uploadFile(file: Upload!): File!
-    convertToExel: [User]
-    addPost(message:String!): Boolean
+    addLightOn(
+      micro: String
+      accel: AccelInput
+      type: Int
+      color: ColorInput
+    ): LightOn
+    addOpenFridge(
+      micro: String
+      accel: AccelInput
+      magne: String
+      type: Int
+      color: String
+    ): OpenFridge
+    convertToExel: [LightOn]
+    addPost(message: Int!): Boolean
   }
 `;
 

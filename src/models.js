@@ -1,23 +1,25 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const usersSchema = new Schema({
-  name: String,
-  mssv: Number,
-  role: Boolean,
-  age: Number,
-  tel: Number,
-  fingerPrint: String,
-  appearance:Number
+const lightOnSchema = new Schema({
+  micro: String,
+  color: Object,
+  accel: Object,
+  type: Number,
+  time: String
 });
 
-const Users = mongoose.model("users", usersSchema);
+const LightOn = mongoose.model("lightOn", lightOnSchema);
 
-const presenceSchema = new Schema({
-  userId: String,
-  checkInTime: String
+const openFridgeSchema = new Schema({
+  micro: String,
+  color: String,
+  magne: String,
+  accel: Object,
+  type: Number,
+  time: String
 });
 
-const Presences = mongoose.model("presences", presenceSchema);
+const OpenFridge = mongoose.model("openFridge", openFridgeSchema);
 
-module.exports = { Users, Presences };
+module.exports = { OpenFridge, LightOn };
