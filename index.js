@@ -29,8 +29,8 @@ httpServer.listen(PORT, () => {
   );
   console.log(
     `🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`
-  );
-});
+  ); 
+}); 
 
 // server.listen({ port: 5000 }).then(({ url }) => {
 // 	console.log(`🚀 Server ready at ${url}`)

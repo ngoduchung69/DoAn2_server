@@ -6,7 +6,14 @@ const fs = require("fs");
 const { MQTTPubSub } = require("graphql-mqtt-subscriptions");
 const moment = require("moment");
 const mqtt = require("mqtt");
-var client = mqtt.connect("mqtt://192.168.43.176", { clientId: "hung1" });
+const { connect } = require("mqtt");
+// var client = mqtt.connect("mqtt://192.168.43.176", { clientId: "hung1" });
+const client = connect("mqtt://tailor.cloudmqtt.com", {
+  reconnectPeriod: 1000,
+  username: "iqkxxvjj",
+  password: "ej37-wtIp03q",
+  port: "16370",
+});
 
 let createLightOn = async (data) => {
   try {
@@ -18,31 +25,39 @@ let createLightOn = async (data) => {
   } catch (error) {
     return error.message;
   }
-}; 
- 
-var topic_s = "event";
-client.subscribe(topic_s, { qos: 1 });
-client.on("message", function (topic, message, packet) {
-  console.log("" + message);
-  let contentString = "" + message;
-  let contentJson = contentString.replace(/'/g, '"');
-  let contentObject = JSON.parse(contentJson);
-  if (contentObject.type !== 0) {
-    createLightOn({ ...contentObject });
-  }
-  console.log({ ...contentObject });
-});
+};
 
 const pubsub = new MQTTPubSub({
   client,
 });
 
-const POST_ADDED = "event";
+// var topic_s = "event";
+var topic_s = "ESP_PUB";
+client.subscribe(topic_s, { qos: 1 });
+client.on("message", function (topic, message, packet) {
+  // console.log("" + message);
+  // let contentString = "" + message;
+  // let contentJson = contentString.replace(/'/g, '"');
+  // let contentObject = JSON.parse(contentJson);
+  // if (contentObject.micro != 0) {
+  // createLightOn({ ...contentObject });
+  // }
+  // console.log({ ...contentObject });
+
+  let contentString = "abc" + message;
+  // console.log(contentString)
+  // pubsub.publish(POST_ADDED, contentString);
+});
+
+// const POST_ADDED = "event";
+const POST_ADDED = "ESP_PUB";
 
 const resolvers = {
   Subscription: {
     postAdded: {
       resolve: (payload) => {
+        // return payload;
+
         return payload;
       },
       subscribe: () => pubsub.asyncIterator([POST_ADDED]),
@@ -72,11 +87,12 @@ const resolvers = {
     },
     addPost(root, args, context) {
       // pubsub.publish(POST_ADDED, { postAdded: args });
+      console.log(args.message);
       pubsub.publish(POST_ADDED, args.message);
       // return postController.addPost(args);
       return true;
     },
-   
+
     convertToExel: (parent, args) => {
       let timeNow = moment().format("YYYY-MM-DD");
       LightOn.find({}).then((a) => {
@@ -88,9 +104,12 @@ const resolvers = {
         }
         var fileData = [];
         var fileLabel = [];
+        var q = 0;
         for (var x of data) {
+          q++;
           fileData.push({
-            micro: x.micro, 
+            stt: q,
+            micro: x.micro,
             red: x.color.red,
             blue: x.color.blue,
             green: x.color.green,
@@ -99,8 +118,8 @@ const resolvers = {
             z: x.accel.z,
           });
           fileLabel.push({
-            type: x.type, 
-          }); 
+            type: x.type,
+          });
         }
         var xls = json2xls(fileData);
         var xlsLabel = json2xls(fileLabel);

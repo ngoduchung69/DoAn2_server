@@ -1,9 +1,33 @@
 const { gql } = require("apollo-server-express");
 
+// {"Id":"1","U1":"38.233","U2":"38.237","I1":"0.438","I2":"0.438","cosP1":"0.990","cosP2":"0.988"}
+// {"csS":"33.514","csP":"33.144","csQ":"0.370","cosP":"0.989","freq":"49.000","P_peak":"33.706","Q_peak":"0.931"}
+
 const typeDefs = gql`
-  type Subscription {
-    postAdded: String
+
+type PostAddedObject {
+    Id: String
+    U1: String
+    U2: String
+    I1: String
+    I2: String
+    cosP1: String
+    cosP2: String
+    csS: String
+    csP: String
+    csQ: String
+    cosP: String
+    freq: String
+    P_peak: String
+    Q_peak: String
   }
+
+  type Subscription {
+    # postAdded: String
+    postAdded: PostAddedObject
+  }
+
+  
 
   type Accel {
     x: String
@@ -14,7 +38,7 @@ const typeDefs = gql`
   type Color {
     red: String
     green: String
-    Blue: String
+    blue: String
   }
 
   input AccelInput {
@@ -26,7 +50,7 @@ const typeDefs = gql`
   input ColorInput {
     red: String
     green: String
-    Blue: String
+    blue: String
   }
 
   type LightOn {
@@ -67,7 +91,7 @@ const typeDefs = gql`
       color: String
     ): OpenFridge
     convertToExel: [LightOn]
-    addPost(message: Int!): Boolean
+    addPost(message: String!): Boolean
   }
 `;
 
