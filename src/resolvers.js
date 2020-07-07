@@ -10,9 +10,9 @@ const { connect } = require("mqtt");
 // var client = mqtt.connect("mqtt://192.168.43.176", { clientId: "hung1" });
 const client = connect("mqtt://tailor.cloudmqtt.com", {
   reconnectPeriod: 1000,
-  username: "iqkxxvjj",
-  password: "ej37-wtIp03q",
-  port: "16370",
+  username: "zuqtckzj",
+  password: "KvEwQIQrMSLp",
+  port: "16132",
 });
 
 let createLightOn = async (data) => {
@@ -32,25 +32,23 @@ const pubsub = new MQTTPubSub({
 });
 
 // var topic_s = "event";
-var topic_s = "ESP_PUB";
+var topic_s = "demo";
 client.subscribe(topic_s, { qos: 1 });
 client.on("message", function (topic, message, packet) {
-  // console.log("" + message);
-  // let contentString = "" + message;
-  // let contentJson = contentString.replace(/'/g, '"');
-  // let contentObject = JSON.parse(contentJson);
-  // if (contentObject.micro != 0) {
-  // createLightOn({ ...contentObject });
-  // }
+  console.log("" + message);
+  let contentString = "" + message;
+  let contentJson = contentString.replace(/'/g, '"');
+  let contentObject = JSON.parse(contentJson);
+  if (contentObject.micro != 0) {
+  createLightOn({ ...contentObject });
+  }
   // console.log({ ...contentObject });
-
-  let contentString = "abc" + message;
   // console.log(contentString)
   // pubsub.publish(POST_ADDED, contentString);
 });
 
 // const POST_ADDED = "event";
-const POST_ADDED = "ESP_PUB";
+const POST_ADDED = "demo";
 
 const resolvers = {
   Subscription: {

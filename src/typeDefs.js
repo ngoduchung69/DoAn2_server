@@ -5,26 +5,8 @@ const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
 
-type PostAddedObject {
-    Id: String
-    U1: String
-    U2: String
-    I1: String
-    I2: String
-    cosP1: String
-    cosP2: String
-    csS: String
-    csP: String
-    csQ: String
-    cosP: String
-    freq: String
-    P_peak: String
-    Q_peak: String
-  }
-
   type Subscription {
-    # postAdded: String
-    postAdded: PostAddedObject
+    postAdded: String
   }
 
   
