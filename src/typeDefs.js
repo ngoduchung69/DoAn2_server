@@ -4,12 +4,9 @@ const { gql } = require("apollo-server-express");
 // {"csS":"33.514","csP":"33.144","csQ":"0.370","cosP":"0.989","freq":"49.000","P_peak":"33.706","Q_peak":"0.931"}
 
 const typeDefs = gql`
-
   type Subscription {
     postAdded: String
   }
-
-  
 
   type Accel {
     x: String
@@ -35,6 +32,14 @@ const typeDefs = gql`
     blue: String
   }
 
+  type User {
+    _id: ID!
+    name: String
+    phone: String
+    address: String
+    fingerId: String
+  }
+
   type LightOn {
     _id: ID!
     micro: String
@@ -56,9 +61,16 @@ const typeDefs = gql`
 
   type Query {
     lightOnQuery: [LightOn]
+    findUser(fingerId:String):User
   }
 
   type Mutation {
+    addUser(
+      name: String
+      phone: String
+      address: String
+      fingerId: String
+    ): User
     addLightOn(
       micro: String
       accel: AccelInput

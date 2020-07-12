@@ -1,4 +1,4 @@
-const { LightOn, OpenFridge } = require("./models");
+const { LightOn, OpenFridge, User } = require("./models");
 const mongoose = require("mongoose");
 const XLSX = require("xlsx");
 var json2xls = require("json2xls");
@@ -8,11 +8,11 @@ const moment = require("moment");
 const mqtt = require("mqtt");
 const { connect } = require("mqtt");
 // var client = mqtt.connect("mqtt://192.168.43.176", { clientId: "hung1" });
-const client = connect("mqtt://tailor.cloudmqtt.com", {
+const client = connect("mqtt://soldier.cloudmqtt.com", {
   reconnectPeriod: 1000,
-  username: "zuqtckzj",
-  password: "KvEwQIQrMSLp",
-  port: "16132",
+  username: "xbgtybxd",
+  password: "JZIb_B9EyDts",
+  port: "11282",
 });
 
 let createLightOn = async (data) => {
@@ -32,23 +32,23 @@ const pubsub = new MQTTPubSub({
 });
 
 // var topic_s = "event";
-var topic_s = "demo";
+var topic_s = "test";
 client.subscribe(topic_s, { qos: 1 });
 client.on("message", function (topic, message, packet) {
   console.log("" + message);
-  let contentString = "" + message;
-  let contentJson = contentString.replace(/'/g, '"');
-  let contentObject = JSON.parse(contentJson);
-  if (contentObject.micro != 0) {
-  createLightOn({ ...contentObject });
-  }
+  // let contentString = "" + message;
+  // let contentJson = contentString.replace(/'/g, '"');
+  // let contentObject = JSON.parse(contentJson);
+  // if (contentObject.micro != 0) {
+  // createLightOn({ ...contentObject });
+  // }
   // console.log({ ...contentObject });
   // console.log(contentString)
   // pubsub.publish(POST_ADDED, contentString);
 });
 
 // const POST_ADDED = "event";
-const POST_ADDED = "demo";
+const POST_ADDED = "test";
 
 const resolvers = {
   Subscription: {
@@ -63,6 +63,7 @@ const resolvers = {
   },
   Query: {
     lightOnQuery: async () => await LightOn.find(),
+    findUser:async (_,fingerId) => await User.findOne(fingerId)
   },
   Mutation: {
     addLightOn: async (parent, args) => {
@@ -78,6 +79,14 @@ const resolvers = {
     addOpenFridge: async (parent, args) => {
       try {
         let response = await OpenFridge.create(args);
+        return response;
+      } catch (error) {
+        return error.message;
+      }
+    },
+    addUser: async (parent, args) => {
+      try {
+        let response = await User.create(args);
         return response;
       } catch (error) {
         return error.message;

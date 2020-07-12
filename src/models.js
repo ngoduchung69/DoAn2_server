@@ -6,10 +6,19 @@ const lightOnSchema = new Schema({
   color: Object,
   accel: Object,
   type: Number,
-  time: String
+  time: String,
 });
 
 const LightOn = mongoose.model("lightOn", lightOnSchema);
+
+const userSchema = new Schema({
+  name: String,
+  phone: String,
+  address: String,
+  fingerId: String,
+});
+
+const User = mongoose.model("user", userSchema);
 
 const openFridgeSchema = new Schema({
   micro: String,
@@ -17,9 +26,9 @@ const openFridgeSchema = new Schema({
   magne: String,
   accel: Object,
   type: Number,
-  time: String
+  time: String,
 });
 
 const OpenFridge = mongoose.model("openFridge", openFridgeSchema);
 
-module.exports = { OpenFridge, LightOn };
+module.exports = { OpenFridge, LightOn, User };

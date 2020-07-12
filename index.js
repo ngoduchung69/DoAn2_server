@@ -17,7 +17,7 @@ server.applyMiddleware({ app });
 // server.listen({ port: 4000 }, () =>  
 //   console.log("🚀 Server ready at http://localhost:4000/graphql  ")
 // ); 
-const PORT = 4001;
+const PORT = 4000;
 
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
