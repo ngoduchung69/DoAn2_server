@@ -55,7 +55,6 @@ const resolvers = {
     postAdded: {
       resolve: (payload) => {
         // return payload;
-
         return payload;
       },
       subscribe: () => pubsub.asyncIterator([POST_ADDED]),
@@ -95,7 +94,7 @@ const resolvers = {
     addPost(root, args, context) {
       // pubsub.publish(POST_ADDED, { postAdded: args });
       console.log(args.message);
-      pubsub.publish(POST_ADDED, args.message);
+      pubsub.publish("test1", args.message);
       // return postController.addPost(args);
       return true;
     },
