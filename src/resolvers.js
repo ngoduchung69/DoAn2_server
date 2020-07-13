@@ -36,12 +36,12 @@ var topic_s = "demo";
 client.subscribe(topic_s, { qos: 1 });
 client.on("message", function (topic, message, packet) {
   console.log("" + message);
-  let contentString = "" + message;
-  let contentJson = contentString.replace(/'/g, '"');
-  let contentObject = JSON.parse(contentJson);
-  if (contentObject.micro != 0) {
-  createLightOn({ ...contentObject });
-  }
+  // let contentString = "" + message;
+  // let contentJson = contentString.replace(/'/g, '"');
+  // let contentObject = JSON.parse(contentJson);
+  // if (contentObject.micro != 0) {
+  // createLightOn({ ...contentObject });
+  // }
   // console.log({ ...contentObject });
   // console.log(contentString)
   // pubsub.publish(POST_ADDED, contentString);
@@ -130,3 +130,4 @@ const resolvers = {
 };
 
 module.exports = { resolvers };
+ 
