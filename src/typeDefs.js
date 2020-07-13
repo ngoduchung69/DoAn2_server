@@ -62,6 +62,7 @@ const typeDefs = gql`
   type Query {
     lightOnQuery: [LightOn]
     findUser(fingerId:String):User
+    getAllUsers:[User]
   }
 
   type Mutation {

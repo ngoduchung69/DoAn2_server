@@ -62,7 +62,8 @@ const resolvers = {
   },
   Query: {
     lightOnQuery: async () => await LightOn.find(),
-    findUser:async (_,fingerId) => await User.findOne(fingerId)
+    findUser:async (_,fingerId) => await User.findOne(fingerId),
+    getAllUsers: async () => await User.find()
   },
   Mutation: {
     addLightOn: async (parent, args) => {
