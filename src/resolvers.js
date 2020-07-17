@@ -96,9 +96,6 @@ client.on("message", function (topic, message, packet) {
 	if (contentObject.micro != 0) {
 		createLightOn({ ...contentObject });
 	}
-	// console.log({ ...contentObject });
-	// console.log(contentString)
-	// pubsub.publish(POST_ADDED, contentString);
 });
 
 // const POST_ADDED = "event";
