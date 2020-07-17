@@ -7,9 +7,8 @@ const typeDefs = gql`
 
   type Subscription {
     postAdded: String
+	events: Int
   }
-
-  
 
   type Accel {
     x: String
@@ -74,6 +73,7 @@ const typeDefs = gql`
     ): OpenFridge
     convertToExel: [LightOn]
     addPost(message: String!): Boolean
+    deleteALl: Boolean
   }
 `;
 
