@@ -89,7 +89,7 @@ client.on("message", function (topic, message, packet) {
 	let contentString = "" + message;
 	let contentJson = contentString.replace(/'/g, '"');
 	let contentObject = JSON.parse(contentJson);
-	contentObject.type = 2;
+	contentObject.type = 1;
 	// let arrData = [contentObject.micro, contentObject.color.red, contentObject.color.blue, contentObject.color.green, contentObject.accel.x, contentObject.accel.y, contentObject.accel.z]
 	// const result = multiply(arrData, WMatrix)
 	// console.log(result)
@@ -137,7 +137,13 @@ const resolvers = {
 			}
 		},
 		deleteALl: async () => {
+      
 			await LightOn.deleteMany({});
+			return true;
+    },
+    deleteType: async (parent, args) => {
+      console.log('args',args)
+			await LightOn.deleteMany({type:args.type});
 			return true;
 		},
 		addPost(root, args, context) {

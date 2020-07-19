@@ -74,6 +74,7 @@ const typeDefs = gql`
     convertToExel: [LightOn]
     addPost(message: String!): Boolean
     deleteALl: Boolean
+    deleteType(type:Int):Boolean
   }
 `;
 
