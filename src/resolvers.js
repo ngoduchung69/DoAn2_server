@@ -82,21 +82,21 @@ const pubsub = new MQTTPubSub({
 	client,
 });
 
-// var topic_s = "demo";
-// client.subscribe(topic_s, { qos: 1 });
-// client.on("message", function (topic, message, packet) {
-// 	console.log("" + message);
-// 	let contentString = "" + message;
-// 	let contentJson = contentString.replace(/'/g, '"');
-// 	let contentObject = JSON.parse(contentJson);
-// 	contentObject.type = 2;
-// 	// let arrData = [contentObject.micro, contentObject.color.red, contentObject.color.blue, contentObject.color.green, contentObject.accel.x, contentObject.accel.y, contentObject.accel.z]
-// 	// const result = multiply(arrData, WMatrix)
-// 	// console.log(result)
-// 	if (contentObject.micro != 0 && contentObject.accel.x < 2000 && contentObject.color.red < 2000) {
-// 		createLightOn({ ...contentObject });
-// 	}
-// });
+var topic_s = "demo";
+client.subscribe(topic_s, { qos: 1 });
+client.on("message", function (topic, message, packet) {
+	console.log("" + message);
+	let contentString = "" + message;
+	let contentJson = contentString.replace(/'/g, '"');
+	let contentObject = JSON.parse(contentJson);
+	contentObject.type = 2;
+	// let arrData = [contentObject.micro, contentObject.color.red, contentObject.color.blue, contentObject.color.green, contentObject.accel.x, contentObject.accel.y, contentObject.accel.z]
+	// const result = multiply(arrData, WMatrix)
+	// console.log(result)
+	if (contentObject.micro != 0 && contentObject.accel.x < 2000 && contentObject.color.red < 2000) {
+		createLightOn({ ...contentObject });
+	}
+});
 
 // const POST_ADDED = "event";
 const POST_ADDED = "events";
